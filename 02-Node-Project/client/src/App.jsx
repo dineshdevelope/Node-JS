@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import Header from "./components/Header";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [quotes, setQuotes] = useState([]);
+
+  useEffect(() => {
+    async function fetchQuotes() {
+      const fetchResult = await fetch("/api");
+      const quotesData = await fetchResult.json();
+
+      console.log(quotesData);
+
+      setQuotes(quotesData);
+    }
+    fetchQuotes();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="bg-zinc-800 min-h-screen">
+      <header />
+      <main className="m-10 space-y-4">
+        {quotes.length === 0 ? (
+          <div className="bg-white p-5 rounded">No quotes data available!</div>
+        ) : (
+          ""
+        )}
+        {quotes.map((quote) => (
+          <Quote key={quote.id} quote={quote.quote} author={quote.author} />
+        ))}
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
